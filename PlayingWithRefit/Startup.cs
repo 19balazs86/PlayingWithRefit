@@ -1,41 +1,81 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using PlayingWithRefit.Refit;
+using Polly;
+using Polly.Extensions.Http;
+using Polly.Timeout;
+using Refit;
+using Serilog;
+using Serilog.Events;
 
 namespace PlayingWithRefit
 {
   public class Startup
   {
+    public IConfiguration Configuration { get; }
+
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
+
+      // --> Init: Logger.
+      initLogger();
     }
 
-    public IConfiguration Configuration { get; }
-
-    // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+      WaitAndRetryConfig wrc = Configuration.BindTo<WaitAndRetryConfig>();
+
+      // Add: MessageHandler(s) to the DI container.
+      services.AddTransient<AuthorizationMessageHandler>();
+
+      // --> Create: Polly policy.
+      Policy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call times out.
+        .WaitAndRetryAsync(wrc.Retry, _ => TimeSpan.FromMilliseconds(wrc.Wait));
+
+      Policy<HttpResponseMessage> timeoutPolicy = Policy
+        .TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(wrc.Timeout));
+
+      // !! Problem: AuthorizationHeaderValueGetter is not called by the library, if you add with AddRefitClient.
+
+      //RefitSettings refitSettings = new RefitSettings
+      //{
+      //  AuthorizationHeaderValueGetter = () => Task.FromResult("TestToken")
+      //};
+
+      // -- Add: RefitClient.
+      services.AddRefitClient<IUserClient>()
+        .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:5000"))
+        .AddPolicyHandler(retryPolicy)
+        .AddPolicyHandler(timeoutPolicy) // The order of adding is imporant!
+        .AddHttpMessageHandler<AuthorizationMessageHandler>(); // RefitSettings does not work.
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
+      app.UseDeveloperExceptionPage();
 
       app.UseMvc();
+    }
+
+    private static void initLogger()
+    {
+      Log.Logger = new LoggerConfiguration()
+        .MinimumLevel.Debug()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+        .MinimumLevel.Override("System", LogEventLevel.Information) // Gives you useful information, but not necessary.
+        //.Enrich.FromLogContext()
+        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {Message}{NewLine}{Exception}")
+        .CreateLogger();
     }
   }
 }
