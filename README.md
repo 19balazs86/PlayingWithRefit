@@ -24,7 +24,7 @@ public void ConfigureServices(IServiceCollection services)
     // --> Create: Polly policy.
     Policy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
         .HandleTransientHttpError()
-        .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call times out.
+        .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call gets timeout.
         .WaitAndRetryAsync(wrc.Retry, _ => TimeSpan.FromMilliseconds(wrc.Wait));
 
     Policy<HttpResponseMessage> timeoutPolicy = Policy
