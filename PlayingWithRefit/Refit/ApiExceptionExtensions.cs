@@ -5,19 +5,21 @@ namespace PlayingWithRefit.Refit
 {
   public static class ApiExceptionExtensions
   {
-    // Note: Technically, this is a IDictionary extension...
-    public static void AddApiExceptionFields(this IDictionary<string, object> dic, ApiException exception)
+    public static IDictionary<string, object> ToDictionary(this ApiException apiException)
     {
-      if (dic is null)
-        dic = new Dictionary<string, object>();
+      if (apiException is null)
+        return new Dictionary<string, object>();
 
-      if (exception is null) return;
+      IDictionary<string, object> fieldDictionary = new Dictionary<string, object>
+      {
+        ["Url"]        = apiException.Uri.AbsoluteUri,
+        ["Method"]     = apiException.HttpMethod.Method,
+        ["StatusCode"] = apiException.StatusCode,
+        ["Reason"]     = apiException.ReasonPhrase,
+        ["Content"]    = apiException.Content,
+      };
 
-      dic.TryAdd("Url", exception.Uri.AbsoluteUri);
-      dic.TryAdd("Method", exception.HttpMethod.Method);
-      dic.TryAdd("StatusCode", exception.StatusCode);
-      dic.TryAdd("Message", exception.Message);
-      dic.TryAdd("Content", exception.Content);
+      return fieldDictionary;
     }
   }
 }

@@ -52,24 +52,18 @@ namespace PlayingWithRefit.Controllers
       }
       catch (ApiException ex)
       {
-        Dictionary<string, object> result
-          = new Dictionary<string, object> { ["MethodName"] = methodName };
+        Log.Error(ex, $"ApiException by calling the '{methodName}' method.");
 
-        result.AddApiExceptionFields(ex);
-
-        Log.Error(ex, "Failed to call a JsonPlaceholder method.");
+        IDictionary<string, object> result = ex.ToDictionary();
+        result.Add("MethodName", methodName);
 
         return new JsonResult(result) { StatusCode = 500 };
       }
       catch (JsonReaderException ex)
       {
-        Log.Error(ex, $"JSON deserialization error in a JsonPlaceholder call, method name: {methodName}");
+        Log.Error(ex, $"JSON deserialization error by calling the '{methodName}' method.");
 
-        return new ContentResult
-        {
-          StatusCode = 500,
-          Content    = $"Message: '{ex.Message}'"
-        };
+        return new ContentResult { StatusCode = 500, Content = $"Message: '{ex.Message}'" };
       }
     }
 
@@ -83,24 +77,18 @@ namespace PlayingWithRefit.Controllers
       }
       catch (ApiException ex)
       {
-        Dictionary<string, object> result
-          = new Dictionary<string, object> { ["MethodName"] = methodName };
+        Log.Error(ex, $"ApiException by calling the '{methodName}' method.");
 
-        result.AddApiExceptionFields(ex);
-
-        Log.Error(ex, "Failed to call a JsonPlaceholder method.");
+        IDictionary<string, object> result = ex.ToDictionary();
+        result.Add("MethodName", methodName);
 
         return new JsonResult(result) { StatusCode = 500 };
       }
       catch (JsonReaderException ex)
       {
-        Log.Error(ex, $"JSON deserialization error in a JsonPlaceholder call, method name: {methodName}");
+        Log.Error(ex, $"JSON deserialization error by calling the '{methodName}' method.");
 
-        return new ContentResult
-        {
-          StatusCode = 500,
-          Content    = $"Message: '{ex.Message}'"
-        };
+        return new ContentResult { StatusCode = 500, Content = $"Message: '{ex.Message}'" };
       }
     }
   }

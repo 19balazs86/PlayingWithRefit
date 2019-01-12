@@ -20,10 +20,11 @@ namespace PlayingWithRefit.Controllers
 
     public RefitTestController(IUserClient userClient)
     {
-      // Here, you may inject your business logic and not directly the service/client.
+      // You may inject your business logic here, not directly the service/client.
       _userClient = userClient ?? throw new ArgumentNullException(nameof(userClient));
     }
 
+    // This method initiate a call to the UserController with the IUserClient.
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> Get(CancellationToken ct)
     {
@@ -36,7 +37,7 @@ namespace PlayingWithRefit.Controllers
       //catch (ValidationApiException ex) { }
       catch (ApiException ex)
       {
-        // ApiException: When the response has failed status codes (4xx, 5xx).
+        // ApiException: When the response has a failed status code (4xx, 5xx).
 
         var responseContent = new { ex.StatusCode, Content = ex.HasContent ? ex.Content : "NoContent" };
 
@@ -47,11 +48,7 @@ namespace PlayingWithRefit.Controllers
         // TimeoutRejectedException: Thrown by Polly TimeoutPolicy.
         // JsonReaderException: When you have a problem to deserialize the response.
 
-        return new ContentResult
-        {
-          StatusCode = 500,
-          Content    = $"Message: '{ex.Message}'"
-        };
+        return new ContentResult { StatusCode = 500, Content = $"Message: '{ex.Message}'" };
       }
       catch (OperationCanceledException)
       {

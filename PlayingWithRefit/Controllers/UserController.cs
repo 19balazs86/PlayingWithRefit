@@ -29,10 +29,11 @@ namespace PlayingWithRefit.Controllers
       HttpStatusCode.OK, HttpStatusCode.OK, HttpStatusCode.OK,
     };
 
+    // This method is called by the RefitTestController.
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> Get(CancellationToken ct)
     {
-      // This should be "Bearer TestToken", if you have an Authorization attribute in your interface (IUserClient).
+      // This should be "Bearer TestToken". IUserClient interface have an Authorization attribute.
       //StringValues authorizationToken;
       //HttpContext.Request.Headers.TryGetValue("Authorization", out authorizationToken);
 
@@ -49,7 +50,7 @@ namespace PlayingWithRefit.Controllers
       {
         try
         {
-          // If your method do not accept token as an argument, you can check it here beforehand.
+          // If your method do not accept token in the argument, you can check it here beforehand.
           ct.ThrowIfCancellationRequested();
 
           await Task.Delay(5000, ct);
