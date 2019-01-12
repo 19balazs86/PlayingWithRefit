@@ -58,6 +58,9 @@ namespace PlayingWithRefit
         .AddPolicyHandler(retryPolicy)
         .AddPolicyHandler(timeoutPolicy) // The order of adding is imporant!
         .AddHttpMessageHandler<AuthorizationMessageHandler>(); // RefitSettings does not work.
+
+      services.AddRefitClient<IJsonPlaceholderClient>()
+        .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://jsonplaceholder.typicode.com"));
     }
 
     public void Configure(IApplicationBuilder app, IHostingEnvironment env)

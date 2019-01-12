@@ -38,7 +38,7 @@ namespace PlayingWithRefit.Controllers
 
       HttpStatusCode selectedStatusCode = _httpStatusCodes[_random.Next(_httpStatusCodes.Length)];
 
-      Log.Debug($"UserController with selected status code: {selectedStatusCode}");
+      Log.Debug($"UserController: Selected status code: {selectedStatusCode}");
       
       // --> Return OK.
       if (selectedStatusCode == HttpStatusCode.OK)
@@ -54,15 +54,15 @@ namespace PlayingWithRefit.Controllers
 
           await Task.Delay(5000, ct);
         }
-        catch (Exception ex) when (ex is TaskCanceledException || ex is OperationCanceledException)
+        catch (OperationCanceledException)
         {
-          Log.Debug(ex, "UserController: The task or operation was canceled.");
+          Log.Debug("UserController: The operation was canceled.");
 
           return NoContent();
         }
 
         // The timeout policy will end this call earlier, so you won't see this line.
-        Log.Debug($"UserController after the delay.");
+        Log.Debug($"UserController: After the delay.");
       }
       
       // --> Other returns.

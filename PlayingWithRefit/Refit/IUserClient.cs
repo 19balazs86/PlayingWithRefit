@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using PlayingWithRefit.Model;
 using Refit;
@@ -10,6 +11,6 @@ namespace PlayingWithRefit.Refit
   {
     [Get("/User")]
     //[Headers("Authorization: Bearer")]
-    Task<IEnumerable<UserDto>> GetUsersAsync();
+    Task<IEnumerable<UserDto>> GetUsersAsync(CancellationToken ct);
   }
 }

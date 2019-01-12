@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -21,26 +21,26 @@ namespace PlayingWithRefit.Controllers
     public RefitTestController(IUserClient userClient)
     {
       // Here, you may inject your business logic and not directly the service/client.
-      _userClient = userClient;
+      _userClient = userClient ?? throw new ArgumentNullException(nameof(userClient));
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDto>>> Get()
+    public async Task<ActionResult<IEnumerable<UserDto>>> Get(CancellationToken ct)
     {
       Log.Debug("RefitTestController: Start the call.");
 
       try
       {
-        return Ok(await _userClient.GetUsersAsync());
+        return Ok(await _userClient.GetUsersAsync(ct));
       }
       //catch (ValidationApiException ex) { }
       catch (ApiException ex)
       {
-        // ApiException: When you have HttpRequestException, due to failed status codes (4xx, 5xx).
+        // ApiException: When the response has failed status codes (4xx, 5xx).
 
         var responseContent = new { ex.StatusCode, Content = ex.HasContent ? ex.Content : "NoContent" };
 
-        return new JsonResult(responseContent);
+        return new JsonResult(responseContent) { StatusCode = 500 };
       }
       catch (Exception ex) when (ex is TimeoutRejectedException || ex is JsonReaderException)
       {
@@ -49,9 +49,15 @@ namespace PlayingWithRefit.Controllers
 
         return new ContentResult
         {
-          StatusCode = (int)HttpStatusCode.InternalServerError,
+          StatusCode = 500,
           Content    = $"Message: '{ex.Message}'"
         };
+      }
+      catch (OperationCanceledException)
+      {
+        Log.Debug("RefitTestController: The operation was canceled.");
+
+        return NoContent();
       }
     }
   }
