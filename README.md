@@ -13,6 +13,8 @@ In the example, I use a timeout policy to cancel a long running call. You can fi
 
 Scott Hanselman: [Exploring refit, an automatic type-safe REST library for .NET Standard](https://www.hanselman.com/blog/ExploringRefitAnAutomaticTypesafeRESTLibraryForNETStandard.aspx "Exploring refit, an automatic type-safe REST library for .NET Standard").
 
+Code Maze blog: [DalSoft.RestClient](https://code-maze.com/dalsoft-restclient-consume-any-rest-api "DalSoft.RestClient"), dynamic and fluent C# rest client library.
+
 *ConfigureServices in action:*
 
 ```csharp
