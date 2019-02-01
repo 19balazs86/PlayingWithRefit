@@ -4,15 +4,16 @@ namespace PlayingWithRefit
 {
   public static class ConfigurationExtensions
   {
-    public static T BindTo<T>(this IConfiguration configuration) where T : new()
+    public static T BindTo<T>(this IConfiguration configuration, string key) where T : class, new()
     {
       T bindingObject = new T();
 
-      string sectionName = bindingObject.GetType().Name;
-
-      configuration.GetSection(sectionName).Bind(bindingObject);
+      configuration.GetSection(key).Bind(bindingObject);
 
       return bindingObject;
     }
+
+    public static T BindTo<T>(this IConfiguration configuration) where T : class, new()
+      => configuration.BindTo<T>(typeof(T).Name);
   }
 }
