@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PlayingWithRefit.Refit;
 using Polly;
 using Polly.Extensions.Http;
+using Polly.Retry;
 using Polly.Timeout;
 using Refit;
 
@@ -32,12 +33,12 @@ namespace PlayingWithRefit
       services.AddTransient<AuthorizationMessageHandler>();
 
       // --> Create: Polly policy.
-      Policy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
+      AsyncRetryPolicy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
         .HandleTransientHttpError()
         .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call gets timeout.
         .WaitAndRetryAsync(wrc.Retry, _ => TimeSpan.FromMilliseconds(wrc.Wait));
 
-      Policy<HttpResponseMessage> timeoutPolicy = Policy
+      AsyncTimeoutPolicy<HttpResponseMessage> timeoutPolicy = Policy
         .TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(wrc.Timeout));
 
       // !! Problem: AuthorizationHeaderValueGetter is not called by the library, if you add with AddRefitClient.
