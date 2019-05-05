@@ -14,6 +14,7 @@ This concept can be useful to initiate 3rd party services calls. Refit can help 
 
 - Scott Hanselman: [Exploring refit, an automatic type-safe REST library for .NET Standard](https://www.hanselman.com/blog/ExploringRefitAnAutomaticTypesafeRESTLibraryForNETStandard.aspx "Exploring refit, an automatic type-safe REST library for .NET Standard").
 - Code Maze blog: [DalSoft.RestClient](https://code-maze.com/dalsoft-restclient-consume-any-rest-api "DalSoft.RestClient"), dynamic and fluent C# rest client library.
+- Xamarin Show: [Simplify HTTP in Mobile Apps with Refit](https://www.youtube.com/watch?v=IUP0XFs6XRI "Simplify HTTP in Mobile Apps with Refit").
 
 > In my [Playing with HttpClientFactory](https://github.com/19balazs86/PlayingWithHttpClientFactory "Playing with HttpClientFactory"), I used the built-in HttpClientFactory to initiate http calls.
 
