@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PlayingWithRefit.Refit;
+using PlayingWithRefit.Services;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Retry;
@@ -48,12 +49,15 @@ namespace PlayingWithRefit
       //  AuthorizationHeaderValueGetter = () => Task.FromResult("TestToken")
       //};
 
-      // -- Add: RefitClient.
+      // --> Add: RefitClient.
       services.AddRefitClient<IUserClient>()
         .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:5000"))
         .AddPolicyHandler(retryPolicy)
         .AddPolicyHandler(timeoutPolicy) // The order of adding is imporant!
         .AddHttpMessageHandler<AuthorizationMessageHandler>(); // RefitSettings does not work.
+
+      // --> Decorate IUserClient(RefitClient) with UserClient implementation.
+      services.Decorate<IUserClient, UserClient>();
 
       services.AddRefitClient<IJsonPlaceholderClient>()
         .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://jsonplaceholder.typicode.com"));

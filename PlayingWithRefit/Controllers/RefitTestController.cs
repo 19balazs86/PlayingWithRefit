@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using PlayingWithRefit.Model;
 using PlayingWithRefit.Refit;
-using Polly.Timeout;
-using Refit;
+using PlayingWithRefit.Services;
 using Serilog;
 
 namespace PlayingWithRefit.Controllers
@@ -20,7 +18,6 @@ namespace PlayingWithRefit.Controllers
 
     public RefitTestController(IUserClient userClient)
     {
-      // You may inject your business logic here, not directly the service/client.
       _userClient = userClient ?? throw new ArgumentNullException(nameof(userClient));
     }
 
@@ -34,21 +31,9 @@ namespace PlayingWithRefit.Controllers
       {
         return Ok(await _userClient.GetUsersAsync(ct));
       }
-      //catch (ValidationApiException ex) { }
-      catch (ApiException ex)
+      catch (UserServiceException ex)
       {
-        // ApiException: When the response has a failed status code (4xx, 5xx).
-
-        var responseContent = new { ex.StatusCode, Content = ex.HasContent ? ex.Content : "NoContent" };
-
-        return new JsonResult(responseContent) { StatusCode = 500 };
-      }
-      catch (Exception ex) when (ex is TimeoutRejectedException || ex is JsonReaderException)
-      {
-        // TimeoutRejectedException: Thrown by Polly TimeoutPolicy.
-        // JsonReaderException: When you have a problem to deserialize the response.
-
-        return new ContentResult { StatusCode = 500, Content = $"Message: '{ex.Message}'" };
+        return new ContentResult { StatusCode = 500, Content = ex.Message };
       }
       catch (OperationCanceledException)
       {
