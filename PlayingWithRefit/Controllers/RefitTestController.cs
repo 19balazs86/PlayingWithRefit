@@ -31,7 +31,7 @@ namespace PlayingWithRefit.Controllers
       {
         return Ok(await _userClient.GetUsersAsync(ct));
       }
-      catch (UserServiceException ex)
+      catch (UserClientException ex)
       {
         return new ContentResult { StatusCode = 500, Content = ex.Message };
       }

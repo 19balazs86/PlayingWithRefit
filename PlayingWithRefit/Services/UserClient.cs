@@ -30,14 +30,14 @@ namespace PlayingWithRefit.Services
       {
         // ApiException: When the response has a failed status code (4xx, 5xx).
 
-        throw new UserServiceException(ex);
+        throw new UserClientException(ex);
       }
       catch (Exception ex) when (ex is TimeoutRejectedException || ex is JsonReaderException)
       {
         // TimeoutRejectedException: Thrown by Polly TimeoutPolicy.
         // JsonReaderException: When you have a problem to deserialize the response.
 
-        throw new UserServiceException(ex.Message, ex);
+        throw new UserClientException(ex.Message, ex);
       }
     }
   }
