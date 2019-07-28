@@ -2,7 +2,6 @@
 using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PlayingWithRefit.Refit;
@@ -26,7 +25,7 @@ namespace PlayingWithRefit
 
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddControllers();
 
       WaitAndRetryConfig wrc = Configuration.BindTo<WaitAndRetryConfig>();
 
@@ -63,11 +62,13 @@ namespace PlayingWithRefit
         .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://jsonplaceholder.typicode.com"));
     }
 
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
       app.UseDeveloperExceptionPage();
 
-      app.UseMvc();
+      app.UseRouting();
+
+      app.UseEndpoints(endpoints => endpoints.MapControllers());
     }
   }
 }
