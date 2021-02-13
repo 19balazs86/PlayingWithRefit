@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using PlayingWithRefit.Model;
 using PlayingWithRefit.Refit;
 using Refit;
@@ -59,9 +58,9 @@ namespace PlayingWithRefit.Controllers
 
         return new JsonResult(result) { StatusCode = 500 };
       }
-      catch (JsonReaderException ex)
+      catch (Exception ex)
       {
-        Log.Error(ex, $"JSON deserialization error by calling the '{methodName}' method.");
+        Log.Error(ex, $"Error by calling the '{methodName}' method.");
 
         return new ContentResult { StatusCode = 500, Content = $"Message: '{ex.Message}'" };
       }
@@ -84,9 +83,9 @@ namespace PlayingWithRefit.Controllers
 
         return new JsonResult(result) { StatusCode = 500 };
       }
-      catch (JsonReaderException ex)
+      catch (Exception ex)
       {
-        Log.Error(ex, $"JSON deserialization error by calling the '{methodName}' method.");
+        Log.Error(ex, $"Error by calling the '{methodName}' method.");
 
         return new ContentResult { StatusCode = 500, Content = $"Message: '{ex.Message}'" };
       }

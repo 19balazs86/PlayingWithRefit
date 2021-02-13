@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using PlayingWithRefit.Model;
 using PlayingWithRefit.Refit;
 using Polly.Timeout;
@@ -32,10 +31,9 @@ namespace PlayingWithRefit.Services
 
         throw new UserClientException(ex);
       }
-      catch (Exception ex) when (ex is TimeoutRejectedException || ex is JsonReaderException)
+      catch (Exception ex) when (ex is TimeoutRejectedException)
       {
         // TimeoutRejectedException: Thrown by Polly TimeoutPolicy.
-        // JsonReaderException: When you have a problem to deserialize the response.
 
         throw new UserClientException(ex.Message, ex);
       }

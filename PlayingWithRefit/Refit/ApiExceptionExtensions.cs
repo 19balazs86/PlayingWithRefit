@@ -10,7 +10,7 @@ namespace PlayingWithRefit.Refit
       if (apiException is null)
         return new Dictionary<string, object>();
 
-      IDictionary<string, object> fieldDictionary = new Dictionary<string, object>
+      return new Dictionary<string, object>
       {
         ["Url"]        = apiException.Uri.AbsoluteUri,
         ["Method"]     = apiException.HttpMethod.Method,
@@ -18,8 +18,6 @@ namespace PlayingWithRefit.Refit
         ["Reason"]     = apiException.ReasonPhrase,
         ["Content"]    = apiException.Content,
       };
-
-      return fieldDictionary;
     }
   }
 }
