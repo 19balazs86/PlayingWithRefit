@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Serilog;
+﻿using Serilog;
 using Serilog.Events;
 
 namespace PlayingWithRefit
@@ -16,13 +14,11 @@ namespace PlayingWithRefit
     {
       return Host
         .CreateDefaultBuilder(args)
-        .ConfigureWebHostDefaults(webHostBuilder =>
-          webHostBuilder
-            .UseStartup<Startup>()
-            .UseSerilog(configureLogger));
+        .ConfigureWebHostDefaults(webHostBuilder => webHostBuilder.UseStartup<Startup>())
+        .UseSerilog(configureLogger);
     }
 
-    private static void configureLogger(WebHostBuilderContext context, LoggerConfiguration configuration)
+    private static void configureLogger(HostBuilderContext context, LoggerConfiguration configuration)
     {
       configuration
         .MinimumLevel.Debug()
