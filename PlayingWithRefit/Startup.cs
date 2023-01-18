@@ -55,6 +55,9 @@ namespace PlayingWithRefit
         .AddPolicyHandler(timeoutPolicy) // The order of adding is imporant!
         .AddHttpMessageHandler<AuthorizationMessageHandler>(); // RefitSettings does not work.
 
+      // Using Scrutor to automatically register services DI container
+      // https://andrewlock.net/using-scrutor-to-automatically-register-your-services-with-the-asp-net-core-di-container
+      
       // --> Decorate IUserClient(RefitClient) with UserClient implementation.
       services.Decorate<IUserClient, UserClient>();
 
