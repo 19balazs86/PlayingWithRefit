@@ -1,9 +1,8 @@
-﻿namespace PlayingWithRefit
+﻿namespace PlayingWithRefit;
+
+public sealed class WaitAndRetryConfig
 {
-  public class WaitAndRetryConfig
-  {
-    public int Retry { get; set; }
-    public int Wait { get; set; }
-    public int Timeout { get; set; }
-  }
+    public int Retry { get; init; }
+    public int Wait { get; init; }
+    public int Timeout { get; init; }
 }

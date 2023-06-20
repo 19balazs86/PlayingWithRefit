@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Refit;
 using System.Runtime.Serialization;
-using Refit;
 
-namespace PlayingWithRefit.Services
+namespace PlayingWithRefit.Services;
+
+public class UserClientException : Exception
 {
-  public class UserClientException : Exception
-  {
     public UserClientException()
     {
     }
@@ -25,5 +24,4 @@ namespace PlayingWithRefit.Services
     public UserClientException(ApiException ex) : base($"{ex.Message} @{ex.HttpMethod.Method}('{ex.Uri.AbsoluteUri}') Content: '{ex.Content}'", ex)
     {
     }
-  }
 }

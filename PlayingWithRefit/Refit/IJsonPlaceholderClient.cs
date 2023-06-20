@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using PlayingWithRefit.Model;
+﻿using PlayingWithRefit.Model;
 using Refit;
 
-namespace PlayingWithRefit.Refit
+namespace PlayingWithRefit.Refit;
+
+public interface IJsonPlaceholderClient
 {
-  public interface IJsonPlaceholderClient
-  {
     [Get("/Posts")]
     Task<IEnumerable<Post>> GetAllPostAsync();
 
@@ -21,5 +19,4 @@ namespace PlayingWithRefit.Refit
 
     [Delete("/Posts/{id}")]
     Task DeletePostAsync(int id);
-  }
 }

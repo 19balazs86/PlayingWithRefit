@@ -1,8 +1,7 @@
-﻿namespace PlayingWithRefit.Model
+﻿namespace PlayingWithRefit.Model;
+
+public sealed class UserDto
 {
-  public class UserDto
-  {
     public int Id { get; set; }
     public string Name { get; set; }
-  }
 }
