@@ -1,8 +1,12 @@
 # Playing with Refit
 
-- This small ASP.NET Core WebAPI is an example for using [Refit](https://reactiveui.github.io/refit), an automatic type-safe REST library.
-- This concept can be useful for initiating calls to 3rd party services.
-- [Refitter](https://github.com/christianhelle/refitter) 👤 can generate the Refit interface from OpenAPI specifications.
+This small WebAPI is an example of using Refit, an automatic type-safe REST library. This concept can be beneficial for initiating calls to 3rd-party services.
+
+#### Resources
+
+- [Refit](https://reactiveui.github.io/refit) 👤*Official*
+- [Refitter](https://github.com/christianhelle/refitter) 👤*Christian Helle* - Generate the Refit interface from OpenAPI specifications
+- [Logging HTTP Traffic](https://blog.nimblepros.com/blogs/refit-http-request-response-logging) 📓*NimblePros* - Using HttpMessageHandler
 
 #### Polly and Refit hand in hand
 
