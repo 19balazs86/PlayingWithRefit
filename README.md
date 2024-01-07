@@ -7,6 +7,7 @@ This small WebAPI is an example of using Refit, an automatic type-safe REST libr
 - [Refit](https://reactiveui.github.io/refit) 👤*Official*
 - [Refitter](https://github.com/christianhelle/refitter) 👤*Christian Helle* - Generate the Refit interface from OpenAPI specifications
 - [Logging HTTP Traffic](https://blog.nimblepros.com/blogs/refit-http-request-response-logging) 📓*NimblePros* - Using HttpMessageHandler
+- [Bearer Authentication](https://blog.nimblepros.com/blogs/refit-bearer-auth) 📓*NimblePros*
 
 #### Polly and Refit hand in hand
 
