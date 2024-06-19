@@ -1,9 +1,7 @@
-﻿using PlayingWithRefit.Refit;
+﻿using Microsoft.Extensions.Http.Resilience;
+using PlayingWithRefit.Refit;
 using PlayingWithRefit.Services;
 using Polly;
-using Polly.Extensions.Http;
-using Polly.Retry;
-using Polly.Timeout;
 using Refit;
 
 namespace PlayingWithRefit;
@@ -14,25 +12,15 @@ public static class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        var services      = builder.Services;
-        var configuration = builder.Configuration;
+        var services = builder.Services;
+
+        WaitAndRetryConfig wrc = builder.Configuration.BindTo<WaitAndRetryConfig>();
 
         // Add services to the container
         {
             services.AddControllers();
 
-            WaitAndRetryConfig wrc = configuration.BindTo<WaitAndRetryConfig>();
-
             services.AddTransient<AuthorizationMessageHandler>();
-
-            // --> Create: Polly policy
-            AsyncRetryPolicy<HttpResponseMessage> retryPolicy = HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .Or<TimeoutRejectedException>() // Thrown by Polly's TimeoutPolicy if the inner call gets timeout.
-                .WaitAndRetryAsync(wrc.Retry, _ => TimeSpan.FromMilliseconds(wrc.Wait));
-
-            AsyncTimeoutPolicy<HttpResponseMessage> timeoutPolicy = Policy
-                .TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(wrc.Timeout));
 
             // AuthorizationMessageHandler is a better way to set the token because it has access to DI
             //var refitSettings = new RefitSettings
@@ -43,9 +31,9 @@ public static class Program
             // --> Add: RefitClient
             services.AddRefitClient<IUserClient>()
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:5000"))
-                .AddPolicyHandler(retryPolicy)
-                .AddPolicyHandler(timeoutPolicy) // The order of adding is imporant!
-                .AddHttpMessageHandler<AuthorizationMessageHandler>();
+                .AddHttpMessageHandler<AuthorizationMessageHandler>()
+                //.AddStandardResilienceHandler()
+                .AddResilienceHandler("user-pipeline", builder => configureResilienceHandler(builder, wrc));
 
             // Using Scrutor to automatically register services DI container
             // https://andrewlock.net/using-scrutor-to-automatically-register-your-services-with-the-asp-net-core-di-container
@@ -65,5 +53,23 @@ public static class Program
         }
 
         app.Run();
+    }
+
+    private static void configureResilienceHandler(ResiliencePipelineBuilder<HttpResponseMessage> pipelineBuilder, WaitAndRetryConfig wrc)
+    {
+        // --> Define option: Retry
+        var retryOptions = new HttpRetryStrategyOptions
+        {
+            // ShouldHandle  = ... this is set by default in HttpRetryStrategyOptions
+            MaxRetryAttempts = wrc.MaxRetryAttempts,
+            Delay            = TimeSpan.FromMilliseconds(wrc.Delay),
+            BackoffType      = DelayBackoffType.Constant,
+        };
+
+        // --> Configure: Pipeline
+        pipelineBuilder
+            .AddTimeout(TimeSpan.FromMilliseconds(wrc.TotalRequestTimeout))
+            .AddRetry(retryOptions)
+            .AddTimeout(TimeSpan.FromMilliseconds(wrc.AttemptTimeout));
     }
 }

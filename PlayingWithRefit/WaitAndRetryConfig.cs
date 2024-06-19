@@ -2,7 +2,8 @@
 
 public sealed class WaitAndRetryConfig
 {
-    public int Retry { get; init; }
-    public int Wait { get; init; }
-    public int Timeout { get; init; }
+    public int MaxRetryAttempts { get; init; }
+    public int Delay { get; init; }
+    public int AttemptTimeout { get; init; }
+    public int TotalRequestTimeout { get; init; }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using PlayingWithRefit.Model;
 using System.Net;
 
@@ -35,8 +36,8 @@ public sealed class UserController : ControllerBase
     public async Task<ActionResult<IEnumerable<UserDto>>> Get(CancellationToken ct)
     {
         // This should be "Bearer TestToken". IUserClient interface have an Authorization attribute.
-        //StringValues authorizationToken;
-        //HttpContext.Request.Headers.TryGetValue("Authorization", out authorizationToken);
+        StringValues authorizationToken;
+        HttpContext.Request.Headers.TryGetValue("Authorization", out authorizationToken);
 
         HttpStatusCode selectedStatusCode = _httpStatusCodes[Random.Shared.Next(_httpStatusCodes.Length)];
 
