@@ -1,9 +1,8 @@
 ﻿using Refit;
-using System.Runtime.Serialization;
 
 namespace PlayingWithRefit.Services;
 
-public class UserClientException : Exception
+public sealed class UserClientException : Exception
 {
     public UserClientException()
     {
@@ -14,10 +13,6 @@ public class UserClientException : Exception
     }
 
     public UserClientException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
-
-    protected UserClientException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 
