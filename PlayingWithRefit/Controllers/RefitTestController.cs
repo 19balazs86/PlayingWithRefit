@@ -10,13 +10,15 @@ namespace PlayingWithRefit.Controllers;
 public sealed class RefitTestController : ControllerBase
 {
     private readonly ILogger<RefitTestController> _logger;
+
     private readonly IUserClient _userClient;
 
     public RefitTestController(ILogger<RefitTestController> logger, IUserClient userClient)
     {
-        _logger = logger;
+        ArgumentNullException.ThrowIfNull(userClient, nameof(userClient));
 
-        _userClient = userClient ?? throw new ArgumentNullException(nameof(userClient));
+        _logger     = logger;
+        _userClient = userClient;
     }
 
     // This method initiate a call to the UserController with the IUserClient.
@@ -31,7 +33,7 @@ public sealed class RefitTestController : ControllerBase
         }
         catch (UserClientException ex)
         {
-            return new ContentResult { StatusCode = 500, Content = ex.Message };
+            return new ContentResult { StatusCode = 500, Content = $"Message: '{ex.Message}'" };
         }
         catch (OperationCanceledException)
         {

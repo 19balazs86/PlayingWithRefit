@@ -10,10 +10,12 @@ public sealed class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
 
-    private readonly HttpStatusCode[] _httpStatusCodes = new HttpStatusCode[]
-    {
-        HttpStatusCode.BadRequest,  // Polly won't retry for this.
-        HttpStatusCode.NotFound,    // Polly won't retry for this.
+    private readonly HttpStatusCode[] _httpStatusCodes =
+    [
+        HttpStatusCode.BadRequest,           // Polly won't retry for this
+        HttpStatusCode.NotFound,             // Polly won't retry for this
+        HttpStatusCode.UnprocessableContent, // Polly won't retry for this
+        HttpStatusCode.NotImplemented,       // I use it for 200 OK with bad JSON response
         HttpStatusCode.RequestTimeout,
         HttpStatusCode.RequestTimeout,
         HttpStatusCode.InternalServerError,
@@ -21,7 +23,7 @@ public sealed class UserController : ControllerBase
         HttpStatusCode.InternalServerError,
         HttpStatusCode.OK, HttpStatusCode.OK, HttpStatusCode.OK,
         HttpStatusCode.OK, HttpStatusCode.OK, HttpStatusCode.OK,
-    };
+    ];
 
     public UserController(ILogger<UserController> logger)
     {
@@ -40,9 +42,13 @@ public sealed class UserController : ControllerBase
 
         _logger.LogDebug("UserController: Selected status code: {selectedStatusCode}", selectedStatusCode);
 
-        // --> Return OK.
+        // --> Return OK
         if (selectedStatusCode == HttpStatusCode.OK)
             return Ok(Enumerable.Range(1, 5).Select(x => new UserDto { Id = x, Name = $"Name #{x}" }));
+
+        // --> Return OK with bad JSON and JsonException will be thrown in UserHttpClient
+        if (selectedStatusCode == HttpStatusCode.NotImplemented)
+            return new ContentResult { StatusCode = 200, Content = "{Bad JSON}" };
 
         // --> Delay.
         if (selectedStatusCode == HttpStatusCode.RequestTimeout)

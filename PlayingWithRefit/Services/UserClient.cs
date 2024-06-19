@@ -8,7 +8,7 @@ namespace PlayingWithRefit.Services;
 /// <summary>
 /// This is a decorator/wrapper class for IUserClient added as RefitClient.
 /// </summary>
-public class UserClient : IUserClient
+public sealed class UserClient : IUserClient
 {
     private readonly IUserClient _userClient;
 
@@ -27,10 +27,8 @@ public class UserClient : IUserClient
 
             throw new UserClientException(ex);
         }
-        catch (Exception ex) when (ex is TimeoutRejectedException)
+        catch (TimeoutRejectedException ex) // ExecutionRejectedException can be use to catch Polly's exceptions: https://www.pollydocs.org/api/Polly.ExecutionRejectedException.html
         {
-            // TimeoutRejectedException: Thrown by Polly TimeoutPolicy.
-
             throw new UserClientException(ex.Message, ex);
         }
     }
