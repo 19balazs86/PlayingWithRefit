@@ -7,6 +7,7 @@ With Refit, you can use **Polly** as a resilience and transient-fault-handling l
 #### Resources
 
 - [Refit](https://reactiveui.github.io/refit) 👤*Official*
+- [Working with Refit type-safe REST library](https://www.milanjovanovic.tech/blog/refit-in-dotnet-building-robust-api-clients-in-csharp) 📓*Milan newsletter*
 - [Refitter](https://github.com/christianhelle/refitter) 👤*Christian Helle - Generate the Refit interface from OpenAPI specifications*
 - [Logging HTTP Traffic](https://blog.nimblepros.com/blogs/refit-http-request-response-logging) 📓*NimblePros - Using HttpMessageHandler*
 - [Bearer Authentication](https://blog.nimblepros.com/blogs/refit-bearer-auth) 📓*NimblePros*
