@@ -11,6 +11,7 @@
 - [Logging HTTP Traffic](https://blog.nimblepros.com/blogs/refit-http-request-response-logging) 📓*NimblePros - Using HttpMessageHandler*
 - [Bearer Authentication](https://blog.nimblepros.com/blogs/refit-bearer-auth) 📓*NimblePros*
 - [Playing with HttpClientFactory](https://github.com/19balazs86/PlayingWithHttpClientFactory) 👤*My repository*
+- [Configure JsonSerializerContext in Refit for Native AOT](https://blog.ostebaronen.dk/2025/01/jsonserializercontext.html) 📓Tomasz Cielecki
 
 ## Alternatives
 
